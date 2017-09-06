@@ -104,6 +104,11 @@ def load_cell(cell_id, cell_type = '?'):
     for .stls changes. Blender reads in something like '000000_ds10.stl' and 
     renames it internally to '000000 Ds10'.
     
+    Note: added global variables fileconv and blendconv. These are the naming 
+    conventions used by the two systems. Will always assume it starts with a 
+    cell id, followed by whatever is specified in fileconv. blendconv must
+    match how blender interprets the fileconv, see above note.
+    
     cell_id : int,
         number of cell
     cell_type : str
@@ -112,8 +117,8 @@ def load_cell(cell_id, cell_type = '?'):
         path to where stls are stored 
     '''
     
-    bpy.ops.import_mesh.stl(filepath = STL_FOLDER + str(cell_id) + '_ds10.stl')
-    name = str(cell_id) + ' Ds10'
+    bpy.ops.import_mesh.stl(filepath = STL_FOLDER + str(cell_id) + fileconv)
+    name = str(cell_id) + blendconv
     if cell_type == 'E':
         bpy.data.objects[name].data.materials.append(bpy.data.materials['spiny_neuron_mat'])
         bpy.data.objects[name].select = True 
@@ -350,7 +355,6 @@ def clear_all():
     bpy.ops.object.delete()
 
 
-
 '''
 The following 3 functions were a small utility I made to estimate the centers 
 of cells without having to write coordinates down manually. It estimates the 
@@ -415,3 +419,5 @@ smooth_cells = smooth_cells.flatten()
 spiny_cells = cell_id_array[cell_type_array == 'E']
 spiny_cells = spiny_cells.flatten()
 
+fileconv = '_ds10.stl'
+blendconv = ' Ds10'
